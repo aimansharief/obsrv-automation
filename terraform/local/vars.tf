@@ -13,7 +13,7 @@ variable "kind_cluster_config_path" {
 variable "kube_config_context" {
   type        = string
   description = "The config context in kubeconfig"
-  default = "minikube"
+  default = "kind-one-click"
  }
 
 variable "ingress_nginx_helm_version" {
@@ -67,8 +67,56 @@ variable "KAFKA_CHART" {
 }
 
 variable "KAFKA_NAMESPACE" {
-  description = "KAFKA Instance Running Namespace"
+  description = "Kafka Instance Running Namespace"
   default     = "kafka"
+}
+
+#ELASTICSEARCH
+variable "ELASTICSEARCH_CHART" {
+  description = "Elasticsearch Instance Running Namespace"
+  default     = "../../helm_charts/elasticsearch"
+}
+
+variable "ELASTICSEARCH_NAMESPACE" {
+  description = "Elasticsearch Instance Running Namespace"
+  default     = "knowlg-db"
+}
+
+
+#CASSANDRA
+
+variable "CASSANDRA_CHART" {
+  description = "Cassandra Instance Running Namespace"
+  default = "../../helm_charts/cassandra"
+}
+
+variable "CASSANDRA_NAMESPACE" {
+  description = "CASSANDRA Instance Running Namespace"
+  default     = "knowlg-db"
+}
+
+#NEO4J
+
+variable "NEO4J_CHART" {
+  description = "Neo4j Instance Running Namespace"
+  default = "../../helm_charts/neo4j"
+}
+
+variable "NEO4J_NAMESPACE" {
+  description = "NEO4J Instance Running Namespace"
+  default     = "knowlg-db"
+}
+
+#REDIS
+
+variable "REDIS_CHART" {
+  description = "Redis Instance Running Namespace"
+  default = "../../helm_charts/redis"
+}
+
+variable "REDIS_NAMESPACE" {
+  description = "REDIS Instance Running Namespace"
+  default     = "knowlg-db"
 }
 
 #SUPERSET

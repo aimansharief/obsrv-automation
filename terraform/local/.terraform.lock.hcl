@@ -6,6 +6,7 @@ provider "registry.terraform.io/hashicorp/helm" {
   constraints = "2.6.0"
   hashes = [
     "h1:i+fbwv8Vk8n5kQc+spEtzvCNF4yo2exzSAZhL0ipFuo=",
+    "h1:rGVucCeYAqklKupwoLVG5VPQTIkUhO7WGcw3WuHYrm8=",
     "zh:0ac248c28acc1a4fd11bd26a85e48ab78dd6abf0f7ac842bf1cd7edd05ac6cf8",
     "zh:3d32c8deae3740d8c5310136cc11c8afeffc350fbf88afaca0c34a223a5246f5",
     "zh:4055a27489733d19ca7fa2dfce14d323fe99ae9dede7d0fea21ee6db0b9ca74b",
@@ -25,6 +26,7 @@ provider "registry.terraform.io/hashicorp/kubernetes" {
   version     = "2.12.1"
   constraints = "2.12.1"
   hashes = [
+    "h1:6ZgqegUao9WcfVzYg7taxCQOQldTmMVw0HqjG5S46OY=",
     "h1:YdDA370JByM9HT5GdLpt34z3BvcVW4BnVXqdgB/vZ6I=",
     "zh:1ecb2adff52754fb4680c7cfe6143d1d8c264b00bb0c44f07f5583b1c7f978b8",
     "zh:1fbd155088cd5818ad5874e4d59ccf1801e4e1961ac0711442b963315f1967ab",
@@ -45,6 +47,7 @@ provider "registry.terraform.io/kyma-incubator/kind" {
   version     = "0.0.11"
   constraints = "0.0.11"
   hashes = [
+    "h1:NGeCtvJC1QytQtxFe5MOtAOSrmoXUFluVyAcPdKVEcs=",
     "h1:fXuUjJnW4Nbm8vGb2hMmBlU+SyBiu4h7WSn8jRMp9Iw=",
     "zh:119013330d6681b266dedf034801fb8bb394d315b5deea217b59f364fc5749f0",
     "zh:126efb50568377cdf73736be3ec2c57fcfc6a8a8e5090c91ffcfdb1a3e6cdff8",
