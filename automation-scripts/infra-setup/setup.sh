@@ -128,12 +128,40 @@ setup_kube_config() {
 
 # Check if the config file is provided as a command-line argument
 if [ $# -eq 0 ]; then
-    echo "Usage: $0 <config_file>"
+   echo "Usage: $0 <config_file> install_dependencies=<true/false>"
     exit 1
 fi
 
 # Store the configuration file path
 config_file="$1"
+install_tools="$2"
+
+for arg in "$@"; do
+    case "$arg" in
+        *=*)
+            key=${arg%%=*}
+            value=${arg#*=}
+            case "$key" in
+                install_dependencies)
+                    if [[ "$value" == "true" || "$value" == "false" ]]; then
+                        install_tools="$value"
+                    else
+                        echo "Invalid value for $key: $value. Should be 'true' or 'false'."
+                        exit 1
+                    fi
+                    ;;
+                *)
+                    echo "Invalid parameter: $key"
+                    exit 1
+                    ;;
+            esac
+            ;;
+        *)
+            config_file="$arg"
+            ;;
+    esac
+done
+
 
 # Check if the config file exists
 if [ ! -f "$config_file" ]; then
@@ -141,47 +169,34 @@ if [ ! -f "$config_file" ]; then
     exit 1
 fi
 
+# Check if the boolean value is true or false
+if [ "$install_tools" = "true" ]; then
+    echo "Will verify and install the tool or you can manually still install all the tools..."
+    validate_tools
+fi
+
+if [ -z "$config_file" ]; then
+  echo "Usage: $0 <config_file> install_dependencies=<true/false>"
+  exit 1
+fi
+
 # Read and set variables from the config file
 source "$config_file"
 
 # Set up AWS environment variables
-echo "Setup Infra configurations"
+echo "Environment is updated with secrets"
 export AWS_TERRAFORM_BACKEND_BUCKET_NAME=$AWS_TERRAFORM_BACKEND_BUCKET_NAME
 export AWS_TERRAFORM_BACKEND_BUCKET_REGION=$AWS_TERRAFORM_BACKEND_BUCKET_REGION
 export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
 export AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
 export KUBE_CONFIG_PATH=$KUBE_CONFIG_PATH
-tfvars_file="../../terraform/aws/vars/overrides.tfvars"
+export KUBECONFIG=$KUBE_CONFIG_PATH
 
-# Create the tfvars file
-cat <<EOF > "$tfvars_file"
-eks_nodes_subnet_ids = $EKS_NODES_SUBNET_IDS
-eks_master_subnet_ids = $EKS_MASTER_SUBNET_IDS
-velero_aws_access_key_id = "$VELERO_AWS_ACCESS_KEY_ID"
-velero_aws_secret_access_key = "$VELERO_AWS_SECRET_ACCESS_KEY"
-service_type = "$SERVICE_TYPE"
-vpc_id = "$VPC_ID"
-availability_zones = $AVAILABILITY_ZONES
-building_block  = "$BUILDING_BLOCK"
-env = "$ENV"
-region = "$REGION"
-timezone = "$TIMEZONE"
-create_vpc = "$ALLOW_VPC_CREATION"
-create_velero_user = "$ALLOW_VELERO_USER_CREATION"
-create_kong_ingress = "$ALLOW_KONG_INGRESS_SETUP"
-EOF
 
-echo "terraform.tfvars file created successfully at $tfvars_file."
-
-validate_tools
-#setup_kube_config - TODO - Required to verify 
-
-# Script related to terraform and deployment will start from here
 cd ../../terraform/aws
-terrahelp decrypt  -simple-key=<decryption_key> -file=vars/dev.tfvars
+echo "Obsrv installation has started.."
 terragrunt init
-terragrunt apply -target module.eks -var "create_vpc=$ALLOW_VPC_CREATION" -var "create_velero_user=$ALLOW_VELERO_USER_CREATION"  -var-file=vars/dev.tfvars -var-file=vars/overrides.tfvars -auto-approve
-terragrunt apply -target module.get_kubeconfig -var "create_vpc=$ALLOW_VPC_CREATION" -var "create_velero_user=$ALLOW_VELERO_USER_CREATION"  -var-file=vars/dev.tfvars -var-file=vars/overrides.tfvars -auto-approve
-terragrunt apply  -var "create_vpc=$ALLOW_VPC_CREATION" -var "create_velero_user=$ALLOW_VELERO_USER_CREATION"  -var-file=vars/dev.tfvars -var-file=vars/overrides.tfvars -auto-approve
-
+terragrunt apply -target module.eks -var-file=vars/cluster_overrides.tfvars -auto-approve
+terragrunt apply -target module.get_kubeconfig -var-file=vars/cluster_overrides.tfvars -auto-approve
+terragrunt apply -var-file=vars/cluster_overrides.tfvars -auto-approve

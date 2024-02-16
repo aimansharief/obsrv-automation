@@ -95,6 +95,8 @@ module "superset" {
   redis_release_name                = module.redis_dedup.redis_release_name
   postgresql_service_name           = module.postgresql.postgresql_service_name
   service_type                      = var.service_type
+  superset_image_tag                = var.superset_image_tag
+  
 }
 
 module "grafana_configs" {
@@ -122,7 +124,7 @@ module "redis_denorm" {
   source               = "../modules/helm/redis_denorm"
   env                  = var.env
   building_block       = var.building_block
-  depends_on           = [module.eks, module.monitoring]
+  depends_on           = [module.eks, module.monitoring,module.redis_dedup]
 }
 
 module "kafka" {
@@ -237,6 +239,7 @@ module "secor" {
   cloud_storage_bucket      = module.s3.s3_bucket
   kubernetes_storage_class  = var.kubernetes_storage_class
   region                    = var.region
+  secor_image_tag           = var.secor_image_tag
 }
 
 module "submit_ingestion" {
@@ -269,7 +272,7 @@ module "web_console" {
   env                              = var.env
   building_block                   = var.building_block
   web_console_configs              = var.web_console_configs
-  depends_on                       = [module.eks, module.monitoring]
+  depends_on                       = [module.eks, module.monitoring, module.dataset_api]
   web_console_image_repository     = var.web_console_image_repository
   web_console_image_tag            = var.web_console_image_tag
   service_type                     = var.service_type
