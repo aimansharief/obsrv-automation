@@ -112,7 +112,8 @@ resource "aws_eks_cluster" "eks_master" {
     var.additional_tags)
 
   depends_on = [
-  aws_iam_role_policy_attachment.eks_master_policy_attachment
+  aws_iam_role_policy_attachment.eks_master_policy_attachment,
+  aws_cloudwatch_log_group.eks_cw_log_group.0
   ]
 }
 resource "aws_cloudwatch_log_group" "eks_cw_log_group" {
