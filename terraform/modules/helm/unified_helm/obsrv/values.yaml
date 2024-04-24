@@ -580,6 +580,17 @@ postgresql:
 
           CREATE INDEX IF NOT EXISTS dataset_source_config_status ON dataset_source_config(status);
 
+          CREATE TABLE IF NOT EXISTS system_settings (
+            "key" text NOT NULL,
+            "value" text NOT NULL,
+            "category" text NOT NULL DEFAULT 'SYSTEM'::text,
+            "type" text NOT NULL,
+            "created_date" timestamp NOT NULL DEFAULT now(),
+            "updated_date" timestamp,
+            "label" text,
+            PRIMARY KEY ("key")
+          );
+
           GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO obsrv;
 
           GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public TO obsrv;
@@ -861,13 +872,13 @@ secor:
   # azure_account: *azure-account-name
   # azure_secret: *azure-account-key
   cloud_store_provider: *global-cloud-storage-provider
-  {{- if eq .Values.cloud_store_provider "azure" }}
-  upload_manager: "com.pinterest.secor.uploader.AzureUploadManager"
-  {{- else if eq .Values.cloud_store_provider "s3" }}
+  # {{- if eq .Values.cloud_store_provider "azure" }}
+  # upload_manager: "com.pinterest.secor.uploader.AzureUploadManager"
+  # {{- else if eq .Values.cloud_store_provider "s3" }}
   upload_manager: "com.pinterest.secor.uploader.S3UploadManager"
-  {{- else if eq .Values.cloud_store_provider "gcs" }}
-  upload_manager: "com.pinterest.secor.uploader.GcsUploadManager"
-  {{- end }}
+  # {{- else if eq .Values.cloud_store_provider "gcs" }}
+  # upload_manager: "com.pinterest.secor.uploader.GcsUploadManager"
+  # {{- end }}
   storageClass: *global-k9s-storage-class
   secor_env: *global-env
   region: *global-region
