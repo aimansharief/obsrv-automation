@@ -287,8 +287,8 @@ global:
 
   gcs_bucket: &gcs-bucket ""
 
-  druid_deepstorage_type: &global-druid-deep-store-type ""
-  kubernetes_storage_class: &global-k9s-storage-class ""
+  druid_deepstorage_type: &global-druid-deep-store-type "s3"
+  kubernetes_storage_class: &global-k9s-storage-class "standard"
 
   sys-events-kafka-topic: &sys-events-kafka-topic "dev.system.events"
   sys-telemetry-events-kafka-topic: &sys-telemetry-events-kafka-topic "dev.system.telemetry.events"
@@ -319,8 +319,8 @@ dataset-api:
     REDIS_PORT: 6379
   exhaust_service:
     # LABEL_CONTAINER: *azure-container
-    CLOUD_STORAGE_PROVIDER: &global-cloud-storage-provider ""
-    CLOUD_STORAGE_REGION: &global-cloud-storage-region ""
+    CLOUD_STORAGE_PROVIDER: aws
+    CLOUD_STORAGE_REGION: *global-cloud-storage-region
     # CONTAINER: *azure-container
     CONTAINER_PREFIX: "telemetry-data"
   # service_account_annotations:
